@@ -1,0 +1,168 @@
+---
+title: "Curso Instrodução à Análise de Dados para Pesquisa no Sus"
+output: html_notebook
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# ==============================================================================
+# MÓDULO 1 - AULA 2: INTRODUÇÃO À LINGUAGEM DE PROGRAMAÇÃO R 
+# Curso: Introdução à Análise de Dados para Pesquisa no SUS
+# Script: Gabarito - ATIVIDADES PRÁTICAS AULA 2 
+# ==============================================================================
+
+
+#-------------------------------------
+# CONFIGURAÇÃO INICIAL
+#-------------------------------------
+
+# CARREGAR PACTES
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(arrow)
+library(dplyr)
+library(knitr) # cria tabelas em markdown
+
+# DEFINIR DIRETÓRIO DE TRABALHO 
+# Observação // duplas para entender o caminho ou usar setwd(normalizePath(""))
+curso <- "F:\\Documentos\\IA\\Fiocruz\\Course_Fiocruz_Int_DA_Res_SUS"
+src <- file.path(curso, "src")
+dados <- file.path(curso, "data")
+
+setwd(src)
+
+# VERIFICAR DIRETÓRIO ATUAL
+getwd()
+
+#-------------------------------------
+# IMPORTAÇÃO DOS DADOS
+#-------------------------------------
+
+# IMPORTA ARQUIVO CSV
+df_csv <- read_csv(file.path(dados,"sim_salvador_2023.csv"))
+
+# IMPORTA ARQUIVO XLSX
+df_xlsx <- read_excel(file.path(dados,"sim_salvador_2023.xlsx"))
+
+# IMPORTA ARQUIVO PARQUET
+df_parquet <- read_parquet(file.path(dados,"sim_salvador_2023.parquet"))
+
+# REMOVE DATAFRAMES DUPLICADOS DA MEMÓRIA
+rm(df_xlsx, df_parquet)
+
+# visualizador de estrutura de daods
+glimpse(df_csv)
+
+# visualizador das primeiras linhas
+head(df_csv)
+
+# visualizador das ultimas linhas
+tail(df_csv)
+
+# resumo estatistico
+summary(df_csv)
+
+# usando table() do R base
+table(df_csv$SEXO, useNA = "always")
+
+# usando count(0 do tidiverse
+df_csv %>% 
+  count(SEXO, sort = TRUE) %>%
+  print()
+
+# Criar variável SEXO padronizada
+df_csv <- df_csv %>%
+    mutate(
+      sexo_p = if_else(SEXO == 1, "Masculino",
+                       if_else(SEXO == 2, "Feminino",
+                               if_else(SEXO == 0, "Ignorado", NA_character_)))
+    )
+
+print(df_csv %>% count(SEXO))  # ANTES : SEXO = valores num (0-2)
+
+print(df_csv %>% count(sexo_p))  # ATUAL "SEXO = transforma valores em texto
+
+# Usando Case_when
+df_csv <- df_csv %>%
+  mutate(
+    sexo_p == case_when(
+      SEXO == 1 ~ "Masculino",
+      SEXO == 2 ~ "Feminino",
+      SEXO == 3 ~ "Ignorado",
+      is.na(SEXO) ~ NA_character_
+    )
+  )
+
+# Verifica os resultados
+print(df_csv %>% count(SEXO))
+
+print(df_csv %>% count(sexo_p))
+
+# Converte variável de data para dmy
+df_csv <- df_csv %>%
+  mutate(
+    DTOBITO_dt = dmy(DTOBITO) 
+  )
+
+# Extrair ano da data
+df_csv <- df_csv %>%
+  mutate(
+    ano_obito = year(DTOBITO_dt)
+  )
+
+glimpse(df_csv)
+
+# Contar óbtitos por ano
+df_csv %>% count(ano_obito)
+
+# Contar óbitos por sexo e ano
+df_csv %>% count(sexo_p, ano_obito)
+
+print(df_csv %>% count(ano_obito))
+
+print(df_csv %>% count(sexo_p, ano_obito))
+
+
+# Extrai primeiro caractere (tipo de idade)
+df_csv <- df_csv %>%
+  mutate(
+    tipo_idade = str_sub(IDADE, 1, 1), # Posição de 1 até 1
+    idade = str_sub(IDADE, 2)
+  )
+
+# verifica resultado
+df_csv %>%
+  select(IDADE, tipo_idade, idade) %>% # select seleciona apenas vars dentro dos parênteses
+  head()
+
+print(df_csv %>%
+  select(IDADE, tipo_idade, idade) %>% # select seleciona apenas vars dentro dos parênteses
+  head())
+
+# APLICA todas as transformações de uma vez
+df_csv <- df_csv %>%
+  mutate(
+    tipo_idade = str_sub(IDADE, 1, 1),
+    idade = str_sub(IDADE, 2),
+    idade_anos = case_when(
+      tipo_idade <= 3 ~ 0
+      tipo_idade == 4 ~ as.numeric(idade),
+      tipo_idade == 5 ~ 100 + as.numeric(idade)
+    )
+  )
+
+glimpse(df_csv)
+```
+
+
+
+
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

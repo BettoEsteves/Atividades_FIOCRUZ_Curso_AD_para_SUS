@@ -1,0 +1,21 @@
+# Dados
+*.csv
+*.xlsx
+*.parquet
+*.rds
+*.RData
+
+# Outputs
+*.html
+*.pdf
+*.docx
+
+# R
+.Rhistory
+.Rproj.user
+.RData
+.Ruserdata
+
+# Sistema
+.DS_Store
+Thumbs.db
