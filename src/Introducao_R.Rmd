@@ -86,7 +86,7 @@ print(df_csv %>% count(sexo_p))  # ATUAL "SEXO = transforma valores em texto
 # Usando Case_when
 df_csv <- df_csv %>%
   mutate(
-    sexo_p == case_when(
+    sexo_p = case_when(
       SEXO == 1 ~ "Masculino",
       SEXO == 2 ~ "Feminino",
       SEXO == 3 ~ "Ignorado",
@@ -146,13 +146,26 @@ df_csv <- df_csv %>%
     tipo_idade = str_sub(IDADE, 1, 1),
     idade = str_sub(IDADE, 2),
     idade_anos = case_when(
-      tipo_idade <= 3 ~ 0
+      tipo_idade <= 3 ~ 0,
       tipo_idade == 4 ~ as.numeric(idade),
       tipo_idade == 5 ~ 100 + as.numeric(idade)
     )
   )
 
 glimpse(df_csv)
+
+#view(df_csv) # visualiza tabela completa em outra aba
+
+# Agupa óbitos por mês
+df_csv_agrupado <- df_csv %>%
+  mutate(mes_obito = month(DTOBITO_dt, label = TRUE)) %>%
+  group_by(mes_obito) %>%
+  summarise(
+      total_obitos = n(),
+      idade_media = mean(idade_anos, na.rm = TRUE)
+  )
+
+print(df_csv_agrupado)
 ```
 
 
