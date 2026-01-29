@@ -1,14 +1,6 @@
 # Dados
-*.csv
-*.xlsx
-*.parquet
-*.rds
-*.RData
 
 # Outputs
-*.html
-*.pdf
-*.docx
 
 # R
 .Rhistory
