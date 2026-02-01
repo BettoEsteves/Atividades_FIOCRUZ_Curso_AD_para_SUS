@@ -14,10 +14,15 @@ library(tidyverse)
 library(lubridate)
 library(readxl)
 library(arrow)
-library(dplyr)
 library(ggplot2)
 library(readr)
+library(datasauRus)
+#testando outras libs
 library(knitr) # cria tabelas em markdown
+library(plotly)
+library(highcharter)
+library(echarts4r)
+
 
 # DEFINIR DIRETÓRIO DE TRABALHO 
 curso <- "F:\\Documentos\\IA\\Fiocruz\\Course_Fiocruz_Int_DA_Res_SUS"
@@ -380,8 +385,7 @@ view(sumario_estatistico(tb_20_recem_nascidos, peso_gr))
 # • Adicionar linhas de referência com geom_vline()
 # • Personalizar títulos e rótulos com labs()
 #-------------------------------------
-#
-#-------------------------------------
+
 
 #-------------------------------------
 # 5.1 Gráfico de barras - para variáveis categóricas
@@ -390,6 +394,76 @@ view(sumario_estatistico(tb_20_recem_nascidos, peso_gr))
 # geom_col(): cria barras com alturas especificadas pelos dados
 #-------------------------------------
 
+grafico_barras <- tb_20_recem_nascidos %>%
+  count(faixa_peso_gr) %>%
+  mutate( percentual = n / sum(n) * 100) %>%
+  ggplot( aes(x = faixa_peso_gr, y = percentual)) +
+  geom_col(fill="steelblue") +
+  geom_text(aes(label = paste(round(percentual, 1), "%")),
+            vjust = -0.5, size = 4) +
+  labs(
+    title = "Distribuição de Recém Nascidos por Faixa de Peso/gr",
+    x = "Faixa de Peso",
+    y = "Percentual",
+  ) + 
+  theme_minimal()+ ylim(0,100)
+
+grafico_barras
+readline("Pressione Enter para próximo gráfico...")
+
+
+# TESTES COM OUTRAS LIBS GRÁFICAS
+
+# library(plotly)
+
+grafico <- tb_20_recem_nascidos %>%
+  count(faixa_peso_gr) %>%
+  mutate(percentual = n / sum(n) * 100) %>%
+  plot_ly(x = ~faixa_peso_gr, y = ~percentual, type = 'bar',
+          text = ~paste(round(percentual, 1), '%'),
+          marker = list(color = 'steelblue')) %>%
+  layout(title = "plotly - Distribuição por Faixa de Peso",
+         xaxis = list(title = "Faixa de Peso"),
+         yaxis = list(title = "Percentual (%)"))
+
+grafico  
+readline("Pressione Enter para próximo gráfico...")
+
+
+# library(highcharter)
+
+hc <- tb_20_recem_nascidos %>%
+  count(faixa_peso_gr) %>%
+  hchart('column', hcaes(x = faixa_peso_gr, y = n),
+         name = "Recém-nascidos") %>%
+  hc_title(text = "highcharter - Distribuição por Faixa de Peso") %>%
+  hc_colors(c("#7CB5EC"))
+
+hc  # HTML interativo
+
+
+# library(ggplot2)
+
+dados_resumo <- tb_20_recem_nascidos %>%
+  count(faixa_peso_gr, name = "n")
+
+ggplot(dados_resumo, aes(x = faixa_peso_gr, y = n)) +
+  geom_col(fill = "steelblue", color = "white") +
+  labs(title = "ggplot2 - Distribuição por Faixa de Peso") +
+  theme_classic()
+
+
+readline("Pressione Enter para próximo gráfico...")
+
+
+# library(echarts4r)
+
+tb_20_recem_nascidos %>%
+  count(faixa_peso_gr) %>%
+  e_charts(faixa_peso_gr) %>%
+  e_bar(n, name = "Contagem") %>%
+  e_title("echarts4r - Distribuição por Faixa de Peso") %>%
+  e_theme("westeros")
 
 #-------------------------------------
 # 5.2 Box plot - para comparar distribuições entre grupos
