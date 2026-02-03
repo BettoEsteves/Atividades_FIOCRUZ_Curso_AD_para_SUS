@@ -441,6 +441,7 @@ hc <- tb_20_recem_nascidos %>%
 
 hc  # HTML interativo
 
+readline("Pressione Enter para próximo gráfico...")
 
 # library(ggplot2)
 
@@ -465,6 +466,8 @@ tb_20_recem_nascidos %>%
   e_title("echarts4r - Distribuição por Faixa de Peso") %>%
   e_theme("westeros")
 
+readline("Pressione Enter para próximo gráfico...")
+
 #-------------------------------------
 # 5.2 Box plot - para comparar distribuições entre grupos
 #-------------------------------------
@@ -475,10 +478,42 @@ tb_20_recem_nascidos %>%
 # - Outliers (pontos isolados)
 #-------------------------------------
 
+grafico_boxplot <- tb_colesterol %>% 
+  ggplot(aes(x = metodo, y = valor, fill = metodo)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(
+    title = "Comparação dos métodos de medição de colesterol",
+    x = "Método",
+    y = "Colesterol (mg/dL)"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("steelblue", "coral"))
 
+grafico_boxplot
+
+readline("Pressione Enter para próximo gráfico...")
 #-------------------------------------
 # 5.3 Histograma - para distribuição de variáveis contínuas
 #-------------------------------------
 # O histograma divide os dados em intervalos (bins) e mostra a frequência.
 # Permite visualizar a forma da distribuição (simétrica, assimétrica, etc.)
 #-------------------------------------
+
+grafico_histograma <- tb_20_recem_nascidos %>%
+  ggplot(aes(x = peso_gr)) +
+  geom_histogram(bins = 6, fill = "steelblue", color = "white") +
+  # Linha vertical para a média (vermelha tracejada)
+  geom_vline(aes(xintercept = mean(peso_gr)), 
+             color = "red", linetype = "dashed", linewidth = 1) +
+  # Linha vertical para a mediana (verde pontilhada)
+  geom_vline(aes(xintercept = median(peso_gr)), 
+             color = "darkgreen", linetype = "dotted", linewidth = 1) +
+  labs(
+    title = "Distribuição dos pesos / gr dos recém-nascidos",
+    subtitle = "Linha vermelha = média | Linha verde = mediana",
+    x = "Peso (gr)",
+    y = "Frequência"
+  ) +
+  theme_minimal()
+
+grafico_histograma
