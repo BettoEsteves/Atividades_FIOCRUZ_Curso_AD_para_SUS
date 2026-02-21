@@ -520,5 +520,5 @@ TukeyHSD(modelo_anova)
 # Amostra de 200 indivíduos adultos, 60 hipertensos
 # Teste se a proporção diferente de 25%
 
-print(prop.test(x = 60, n = 200, p = 0.25))
+prop.test(x = 60, n = 200, p = 0.25)
 
