@@ -60,7 +60,6 @@ glimpse(df_csv)
 # • Categorizar variáveis contínuas usando mutate() e case_when()
 # • Criar fatores ordenados com factor()
 # • Contar frequências com count()
-
 #-------------------------------------
 
 tb_20_recem_nascidos <- tibble(
