@@ -1,8 +1,10 @@
 # Curso de Análise de Dados para Pesquisa no SUS
-# FIOCRUZ
-# 
-# Estudante: José Alberto Esteves do Nascimento
-#
+# Aluno: José Alberto Esteves do Nascimento
+
+# Certificado de Conclusão
+<img width="2160" height="1570" alt="image" src="https://github.com/user-attachments/assets/06ccf76b-2f0c-4cd9-af40-a4d057693ab2" />
+
+
 # Créditos
 
 # Ministério da Saúde
@@ -125,5 +127,4 @@ London School of Hygiene and Tropical Medicine (LSHTM)
 [Aula 4]
 
 
-Certificado de Conclusão
-[FIOCRUZ - Analise de Dados para pesquisa no SUS.pdf](https://github.com/user-attachments/files/25588922/FIOCRUZ.-.Analise.de.Dados.para.pesquisa.no.SUS.pdf)
+
